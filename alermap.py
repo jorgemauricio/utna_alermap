@@ -46,7 +46,7 @@ def descarga_info(fecha):
 
     conexion.retrlines("LIST")
 
-	conexion.cwd('{}'.format(fecha)) #Ingresa a una carpeta dentro del servidor
+conexion.cwd('{}'.format(fecha)) #Ingresa a una carpeta dentro del servidor
 	if os.path.exists('datos'):
     #Verifica si la carpeta datos existe (donde se almacenaran los documentos a descargar)
 		os.chdir('datos') #Accede a la carpeta datos
