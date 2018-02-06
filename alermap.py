@@ -2,17 +2,17 @@ from ftplib import FTP #Libreria utilizada para conectarse a un servidor FTP y o
 import os #Libreria utilizada para crear carpetas de almacenamiento
 import requests #Libreria utilizada para obtener el url
 import sys #Libreria utilizada para obtener el codigo obtenido
-from api import claves #Importa la api
+from api import clave #Importa la api
 
-def obt_url(url): #Obtener fecha del url
-    fecha = requests.get(url)
-    if fecha.status_code != 200: #Validar el estado de codigo, para validar que se encontro el url
-        sys.stdout.write('! Error {} el url no es correcto "{}" '.format(fecha.status_code, url))
-        return None #No retorna ningun valor
-    else:
-        print('La fecha ya se encuentra almacenada')
+def fecha_usr(ip): #Obtener fecha del url
 
-    return fecha.text #Retorna el valor obtenido en el url
+    conexion = FTP(ip) #Nombre del servidor
+    conexion.login(clave.usr, clave.pwd) #Usuario y contrasena del servidor
+    fecha = [] 
+    ftp.dir(fecha.append) #Se almacena toda la informacion que se encuentra en el directorio actual dentro del arreglo
+    fecha = fecha[-1].split()[-1] #Se toma el ultimo valor del arreglo, se separa la cadena en un arreglo dividido por espacios y se toma el ultimo valor.
+    return fecha # Se devuelve el valor obtenido
+    
 
 def cinco_dias(fecha): #Obtener cuatro dias posteriores a la fecha obtenida
     ano, mes, dia = (int(n) for n in fecha.split("-")) #Almacenamos cada dato correspondiente dividiendolo por un (-) 
@@ -36,18 +36,17 @@ def cinco_dias(fecha): #Obtener cuatro dias posteriores a la fecha obtenida
                 dias.append('{:04d}-01-{:02d}'.format(ano + 1, n - (dias_mes - dia)))
     return dias
 
-def descarga_info(fecha):    	
+def descargar_datos(fecha):    	
     try:
         conexion = FTP(ip)
-        conexion.login(user=usr,passwd=pwd)
+        conexion.login(clave.usr, clave.pwd)
         print("conexion exitosa")
     except ValueError:
          print("conexion fallida")
 
-    conexion.retrlines("LIST")
-
-conexion.cwd('{}'.format(fecha)) #Ingresa a una carpeta dentro del servidor
-	if os.path.exists('datos'):
+    conexion.cwd('{}'.format(fecha)) #Ingresa a una carpeta dentro del servidor
+	
+    if os.path.exists('datos'):
     #Verifica si la carpeta datos existe (donde se almacenaran los documentos a descargar)
 		os.chdir('datos') #Accede a la carpeta datos
 	else:
@@ -63,13 +62,11 @@ conexion.cwd('{}'.format(fecha)) #Ingresa a una carpeta dentro del servidor
 
 	ftp.quit()
 	os.chdir('..') #Sale de la carpeta datos al directorio raiz
-    
+
 
 clave=claves()
-fecha=obt_url(clave.url)
-cinco_dias=cinco_dias(fecha)
-descargas=descarga_info(fecha)
-for i in cinco_dias:
-print(i)
-descarga_info(fecha)
+fecha=fecha_usr(clave.ip)
+print(fecha)
+print(cinco_dias(fecha))
+descargar_datos(fecha)
 
