@@ -1,8 +1,21 @@
+<<<<<<< HEAD
 from ftplib import FTP #Libreria utilizada para conectarse a un servidor FTP y obtener informacion
 import os #Libreria utilizada para crear carpetas de almacenamiento
 import requests #Libreria utilizada para obtener el url
 import sys #Libreria utilizada para obtener el codigo obtenido
 from api import claves #Importa la api
+=======
+from ftplib import FTP 
+import os 
+import sys 
+from api import claves 
+
+
+def main():
+    print(fecha)
+    cinco_dias(fecha)
+    descarga_datos(fecha)
+>>>>>>> chely2
 
 def fecha_usr(ip): #Obtener fecha del url
 
@@ -51,21 +64,38 @@ def descarga_datos(fecha):
             os.chdir('data') 
         if os.path.exists('{}'.format(fecha)):
             for i in range(1,6):
+<<<<<<< HEAD
+=======
+                print("Descargando archivo d{}.txt".format(i))
+>>>>>>> chely2
                 conexion.retrbinary('RETR d{}.txt'.format(i),open('{}/d{}.txt'.format(fecha, i),'wb').write)
         else:
             os.mkdir('{}'.format(fecha))
             for i in range(1,6):
+<<<<<<< HEAD
                 conexion.retrbinary('RETR d{}.txt'.format(i),open('{}/d{}.txt'.format(fecha, i), 'wb').write)
         conexion.quit()
         os.chdir('..')
 
+=======
+                print("Descargando archivo d{}.txt".format(i))
+                conexion.retrbinary('RETR d{}.txt'.format(i),open('{}/d{}.txt'.format(fecha, i), 'wb').write)
+        conexion.quit()
+        os.chdir('..')
+>>>>>>> chely2
     except ValueError:
         print("Conexion fallida")
 
 clave=claves()
 fecha=fecha_usr(clave.ip)
+<<<<<<< HEAD
 print(fecha)
 print(cinco_dias(fecha))
 descarga_datos(fecha)
 
 
+=======
+
+if __name__=="__main__":
+    main() 
+>>>>>>> chely2

@@ -99,6 +99,7 @@ ENV/
 
 # api
 api.py
+/data
 
 # data
 /data
