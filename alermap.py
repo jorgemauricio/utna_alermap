@@ -2,6 +2,10 @@ from ftplib import FTP
 import os
 import sys
 from api import claves
+import pandas as pd
+import numpy as np
+from matplotlib import pyplot as plt
+from mpl_toolkits.basemap import Basemap
 
 
 def main():
@@ -68,11 +72,90 @@ def descarga_datos(fecha):
     except ValueError:
         print("Conexion fallida")
 
+def mapa(fecha):
+    
+    if os.path.exists('mapas'):
+        os.chdir('mapas')
+    else:
+        os.mkdir('mapas')
+        os.chdir('mapas')
+    os.chdir("..")
+
+    variables=['Rain', 'Tmin', 'Tmax', 'Windpro']
+    for x in range(1,6):
+        datos = pd.read_csv('data/{}/d{}.txt'.format(fecha, x))
+        x= np.array(datos['Long'])
+        x_min=x.min()
+        x_max=x.max()
+        y= np.array(datos['Lat'])
+        y_min=y.min()
+        y_max=y.max()
+
+        for v in variables:
+            if v =='Rain':
+                var1=datos.loc[datos['Rain']>=20]
+                var1=var1.loc[var1['Rain']<=50]
+                var2=datos.loc[datos['Rain']>=50]
+                var2=var2.loc[var2['Rain']<=70]
+                var3=datos.loc[datos['Rain']>=70]
+                var3=var3.loc[var3['Rain']<=150]
+                var4=datos.loc[datos['Rain']>=150]
+                var4=var4.loc[var4['Rain']<=300]
+                var5=datos.loc[datos['Rain']>=300]
+
+            elif v =='Windpro':
+                var1=datos.loc[datos['Windpro']>=50]
+                var1=var1.loc[var1['Windpro']>=61]
+                var2=datos.loc[datos['Windpro']>=62]
+                var2=var2.loc[var2['Windpro']>=74]
+                var3=datos.loc[datos['Windpro']>=75]
+                var3=var3.loc[var3['Windpro']>=88]
+                var4=datos.loc[datos['Windpro']>=89]
+                var4=var4.loc[var4['Windpro']>=102]
+                var5=datos.loc[datos['Windpro']>=102]
+                var5=var5.loc[var5['Windpro']>=117]
+
+            elif v =='Tmin':
+                var1=datos.loc[datos['Tmin']>=-9]
+                var1=var1.loc[var1['Tmin']<=-6]
+                var2=datos.loc[datos['Tmin']>=-6]
+                var2=var2.loc[var2['Tmin']<=-3]
+                var3=datos.loc[datos['Tmin']>=-3]
+                var3=var3.loc[var3['Tmin']<=0]
+                var4=datos.loc[datos['Tmin']>=0]
+                var4=var4.loc[var4['Tmin']<=3]
+                var5=datos.loc[datos['Tmin']>=3]
+                var5=var5.loc[var5['Tmin']<=6]
+
+            elif v=='Tmax':
+
+                var1=datos.loc[datos['Tmax']>=30]
+                var1=var1.loc[var1['Tmax']<=35]
+                var2=datos.loc[datos['Tmax']>=35]
+                var2=var2.loc[var2['Tmax']<=40]
+                var3=datos.loc[datos['Tmax']>=40]
+                var3=var3.loc[var3['Tmax']<=45]
+                var4=datos.loc[datos['Tmax']>=45]
+                var4=var4.loc[var4['Tmax']<=50]
+                var5=datos.loc[datos['Tmax']>=50]
+               
+
+            x=np.array(var1['Long'])
+            y=np.array(var1['Lat'])
+
+            map = Basemap(projection ='mill', llcrnrlat=y_min,urcrnrlat=y_max,llcrnrlon=x_min,urcrnrlon=x_max,resolution='c')
+            x, y=map(x,y)
+            map.scatter(x,y, marker='.', color='#0404B4')
+            map.readshapefile('utna_alermap/shapes/Estados','Mill')
+            plt.show()
+
+
 clave=claves()
 fecha=fecha_usr(clave.ip)
 print(fecha)
 print(cinco_dias(fecha))
 descarga_datos(fecha)
+mapa(fecha)
 
 if __name__=="__main__":
     main()
