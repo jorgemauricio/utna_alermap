@@ -12,33 +12,35 @@ def main():
     print(fecha)
     cinco_dias(fecha)
     descarga_datos(fecha)
+    mapa(fecha)
 
-def fecha_usr(ip): #Obtener fecha del url
+def fecha_usr(ip)
 
-    conexion = FTP(ip) #Nombre del servidor
-    conexion.login(clave.usr, clave.pwd) #Usuario y contrasena del servidor
+    conexion = FTP(ip) 
+    conexion.login(clave.usr, clave.pwd)
     fecha = []
-    conexion.dir(fecha.append) #Se almacena toda la informacion que se encuentra en el directorio actual dentro del arreglo
-    fecha = fecha[-1].split()[-1] #Se toma el ultimo valor del arreglo, se separa la cadena en un arreglo dividido por espacios y se toma el ultimo valor.
-    return fecha # Se devuelve el valor obtenido
+    conexion.dir(fecha.append) 
+    fecha = fecha[-1].split()[-1] 
+    return fecha 
 
 
 def cinco_dias(fecha): #Obtener cuatro dias posteriores a la fecha obtenida
-    ano, mes, dia = (int(n) for n in fecha.split("-")) #Almacenamos cada dato correspondiente dividiendolo por un (-)
-    if mes in (1, 3, 5, 7, 8, 10, 12): #Validacion de fecha
+
+    ano, mes, dia = (int(n) for n in fecha.split("-")) 
+    if mes in (1, 3, 5, 7, 8, 10, 12):
         dias_mes = 31
     elif mes == 2:
-        if ano % 4 == 0 and (ano % 100 != 0 or ano % 400 == 0): #Si el mes se bisiesto
+        if ano % 4 == 0 and (ano % 100 != 0 or ano % 400 == 0): 
             dias_mes = 29
         else:
             dias_mes = 28
     elif mes in (4, 6, 9, 11):
         dias_mes = 30
     dias = []
-    for n in range(0, 5): #Ciclo utilizado para almacenar los 5 dias
+    for n in range(0, 5): 
         if dia + n <= dias_mes:
-            dias.append('{:04d}-{:02d}-{:02d}'.format(ano, mes, dia + n)) #'{:04d}-{:02d}-{:02d}' - Formato para la fecha
-        else:                                                               #Agrega un cero en el caso de los nuemeros unicos entre 1 - 9
+            dias.append('{:04d}-{:02d}-{:02d}'.format(ano, mes, dia + n)) 
+        else:                                                               
             if mes != 12:
                 dias.append('{:04d}-{:02d}-{:02d}'.format(ano, mes+1, n - (dias_mes - dia)))
             else:
@@ -50,9 +52,8 @@ def descarga_datos(fecha):
         conexion=FTP(clave.ip);
         conexion.login(clave.usr,clave.pwd)
         print("Conexion exitosa")
-
         conexion.cwd('{}'.format(fecha))
-
+ 
         if os.path.exists('data'):
             os.chdir('data')
         else:
@@ -80,74 +81,50 @@ def mapa(fecha):
         os.mkdir('mapas')
         os.chdir('mapas')
     os.chdir("..")
-
+    df = pd.DataFrame()
     variables=['Rain', 'Tmin', 'Tmax', 'Windpro']
-    for x in range(1,6):
+    
+    for x in range(0,5):
         datos = pd.read_csv('data/{}/d{}.txt'.format(fecha, x))
-        x= np.array(datos['Long'])
-        x_min=x.min()
-        x_max=x.max()
-        y= np.array(datos['Lat'])
-        y_min=y.min()
-        y_max=y.max()
-
-        for v in variables:
-            if v =='Rain':
-                var1=datos.loc[datos['Rain']>=20]
-                var1=var1.loc[var1['Rain']<=50]
-                var2=datos.loc[datos['Rain']>=50]
-                var2=var2.loc[var2['Rain']<=70]
-                var3=datos.loc[datos['Rain']>=70]
-                var3=var3.loc[var3['Rain']<=150]
-                var4=datos.loc[datos['Rain']>=150]
-                var4=var4.loc[var4['Rain']<=300]
-                var5=datos.loc[datos['Rain']>=300]
-
-            elif v =='Windpro':
-                var1=datos.loc[datos['Windpro']>=50]
-                var1=var1.loc[var1['Windpro']>=61]
-                var2=datos.loc[datos['Windpro']>=62]
-                var2=var2.loc[var2['Windpro']>=74]
-                var3=datos.loc[datos['Windpro']>=75]
-                var3=var3.loc[var3['Windpro']>=88]
-                var4=datos.loc[datos['Windpro']>=89]
-                var4=var4.loc[var4['Windpro']>=102]
-                var5=datos.loc[datos['Windpro']>=102]
-                var5=var5.loc[var5['Windpro']>=117]
-
-            elif v =='Tmin':
-                var1=datos.loc[datos['Tmin']>=-9]
-                var1=var1.loc[var1['Tmin']<=-6]
-                var2=datos.loc[datos['Tmin']>=-6]
-                var2=var2.loc[var2['Tmin']<=-3]
-                var3=datos.loc[datos['Tmin']>=-3]
-                var3=var3.loc[var3['Tmin']<=0]
-                var4=datos.loc[datos['Tmin']>=0]
-                var4=var4.loc[var4['Tmin']<=3]
-                var5=datos.loc[datos['Tmin']>=3]
-                var5=var5.loc[var5['Tmin']<=6]
-
-            elif v=='Tmax':
-
-                var1=datos.loc[datos['Tmax']>=30]
-                var1=var1.loc[var1['Tmax']<=35]
-                var2=datos.loc[datos['Tmax']>=35]
-                var2=var2.loc[var2['Tmax']<=40]
-                var3=datos.loc[datos['Tmax']>=40]
-                var3=var3.loc[var3['Tmax']<=45]
-                var4=datos.loc[datos['Tmax']>=45]
-                var4=var4.loc[var4['Tmax']<=50]
-                var5=datos.loc[datos['Tmax']>=50]
-               
-
-            x=np.array(var1['Long'])
-            y=np.array(var1['Lat'])
-
+        for j in range(0, 5):
+            x= np.array(datos['Long'])
+            y= np.array(datos['Lat'])
+            x_min=x.min()
+            x_max=x.max()
+            y_min=y.min()
+            y_max=y.max()
+            lista= variable(variables[x])
+            var1=datos.loc[datos[variables[x]] >= lista[0]]
+            var1=var1.loc[var1[variables[x]] <= lista[1]]
+            var2=datos.loc[datos[variables[x]] >= lista[2]]
+            var2=var2.loc[var2[variables[x]] <= lista[3]]
+            var3=datos.loc[datos[variables[x]] >= lista[4]]
+            var3=var3.loc[var3[variables[x]] <= lista[5]]
+            var4=datos.loc[datos[variables[x]] >= lista[6]]
+            var4=var4.loc[var4[variables[x]] <= lista[7]]
+            var5=datos.loc[datos[variables[x]] >= lista[8]]
+            var5=var5.loc[var5[variables[x]] <= lista[9]]
             map = Basemap(projection ='mill', llcrnrlat=y_min,urcrnrlat=y_max,llcrnrlon=x_min,urcrnrlon=x_max,resolution='c')
             x, y=map(x,y)
-            map.scatter(x,y, marker='.', color='#0404B4')
+            map.scatter(x,y, marker='.', color='{}'. format(lista))
             map.readshapefile('utna_alermap/shapes/Estados','Mill')
-            plt.show()
+            print ('Generando Mapa "Pronostico del dia {} - {}.png" ...'.format(fecha[i]))
+            plt.title('Pronostico de clima Alermap \n {}'.format(cinco_dias[i]))
+            plt.savefig("mapas/{}/Pronostico de Alermap - {}.png".format(fecha, cincodias[i]))
+                   
+def variable(vari):
+    lista=[]
+    if vari =='Rain':
+        return lista=[20, 50, 50, 70, 70, 100, 100, 150, 150, 300,'rainbow']
+    
+    elif vari=='Windpro':
+        return lista=[62, 74, 74, 88, 88, 102, 102, 117, 117, 150, 'Wistia']
+
+    elif vari=='Tmin':
+        return lista=[3, 0, 0, -3, -3, -6, -6, -9, -9, -12, 'winter']
+
+    elif vari=='Tmax':
+        return lista=[30, 35, 35, 40, 40, 45, 45, 50, 50, 55, 'YIOrRd']
 
 
 clave=claves()
