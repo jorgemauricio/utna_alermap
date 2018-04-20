@@ -47,12 +47,13 @@ def descargar_docs(fecha): #Descargar los documentos de la carpeta con el nombre
     if os.path.exists('{}'.format(fecha)): 
         os.chdir('{}'.format(fecha)) 
         for i in range(1, 6): #Ciclo que realiza 5 veces el proceso incrementando su valor 1
-            ftp.retrbinary('RETR d{}.txt'.format(i),open('d{}.txt'.format(i),'wb').write) 
+           print("DESGARGANDO INFORMACION DE DOCUMENTO d{}.txt".format(i))
+                ftp.retrbinary('RETR d{}.txt'.format(i),open('d{}.txt'.format(i),'wb').write)
     else:
         os.mkdir('{}'.format(fecha)) 
         os.chdir('{}'.format(fecha)) 
         for i in range(1, 6): #Ciclo que realiza 5 veces el proceso incrementando su valor 1
-           print("FECHA OBTENIDA DESGARGANDO INFORMACION",'RETR d{}.txt'.format(i),open('d{}.txt'.format(i),'wb').write) #Descarga los documentos
+           print("DESGARGANDO INFORMACION DE DOCUMENTO d{}.txt".format(i)) #Descarga los documentos
     ftp.quit()
     os.chdir('../..') 
 
