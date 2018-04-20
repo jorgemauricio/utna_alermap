@@ -81,18 +81,17 @@ def descarga_datos(fecha, clave):# funcion descarga_datos descarga los archivos 
     except ValueError:
         print("Conexion fallida")
 
-def mapa(fecha, cincodias):# Funcion mapa que realiza el procesamiento de informacion 
-#dibuja los mapas y como parametros devuelve la fecha obtenida y la validacion de los 4 dias subsecuentes calculados
+def mapa(fecha, cincodias):""" Funcion mapa que realiza el procesamiento de informacion 
+dibuja los mapas y como parametros devuelve la fecha obtenida y la validacion de los
+ 4 dias subsecuentes calculados"""
     
-    if os.path.exists('mapas'):
-        os.chdir('mapas')
-    else:
-        os.mkdir('mapas')
-        os.chdir('mapas')
-    os.chdir("..")
+    
     df = pd.DataFrame()
+
     variables=['Rain', 'Tmin', 'Tmax', 'Windpro']
+
     titulos=['Precipitación','Temperatura Minima','Temperatura Máxima','Velocidad del viento']
+
     val=['MM', '°C ', '°C ', 'KM/H']
 
     for i in range(1,6):
@@ -131,11 +130,16 @@ def mapa(fecha, cincodias):# Funcion mapa que realiza el procesamiento de inform
             plt.text(x =1.0536e+06, y =1.33233e+06, s = u' @2018 INIFAP', fontsize = 15 ,color='green')
             plt.title('{}  para el dia {} en 24h apartir de \n {} '.format(titulos[j], i,fecha))
             plt.savefig('Pronostico-del-dia-{}-clima-{}.png'.format(i, variables[j]),dpi=300)
-            plt.show()
+            if os.path.exists('mapas'):
+                os.chdir('mapas')
+            else:
+                os.mkdir('mapas')
+                os.chdir('mapas')
+            os.chdir("..")           
             plt.clf()
 
-def rangos(var):# Funcion para definir en listas los rangos de cada variable
-#devuelve como parametro la var que es la condicional de las variables
+def rangos(var):"""Funcion para definir en listas los rangos de cada variable
+devuelve como parametro la var que es la condicional de las variables"""
 
     lista=[]
     if var =='Rain':
@@ -151,8 +155,8 @@ def rangos(var):# Funcion para definir en listas los rangos de cada variable
         lista=[30, 35, 35, 40, 40, 45, 45, 50, 50, 55]
     return lista
     
-def colores(var):# Funcion para definir los colores que se se van a dibujar en los mapas 
-# se definen los colores por los rangos de cada variable
+def colores(var):"""Funcion para definir los colores que se se van a dibujar en los mapas 
+se definen los colores por los rangos de cada variable"""
     if var=='Rain':
         colores=['purple','royalblue', 'aqua', 'orange', 'red', 'rainbow']
         
