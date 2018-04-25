@@ -104,5 +104,5 @@ api.py
 # data
 /data
 
-# mypy
-.mypy_cache/
+# mapas
+.mapas_cache/

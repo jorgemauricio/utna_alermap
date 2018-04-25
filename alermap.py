@@ -88,11 +88,11 @@ la fecha encontrada y clave, que son las credenciales que contiene la API """
 def mapa(fecha, cincodias):"""Funcion mapa que realiza el procesamiento de informacion 
 dibuja los mapas y como parametros devuelve la fecha obtenida y la validacion de los 4 dias subsecuentes calculados"""
     variables=['Rain', 'Tmin', 'Tmax', 'Windpro']
-    titulos=['Precipitación','Temperatura Minima','Temperatura Máxima','Velocidad del viento']
-    val=['MM', '°C ', '°C ', 'KM/H']
+    titulos=['Precipitación acumulada en 24h','Temperatura Minima en 24h','Temperatura Máxima en 24h','Velocidad del viento en 24h']
+    val=['mm', '°C ', '°C ', 'km/h']
 
     for i in range(1,6):  # ciclo para leer los 5 archivos .txt
-        datos = pd.read_csv('data/2018-03-15/d{}.txt'.format(i)) 
+        datos = pd.read_csv('data/{}}/d{}.txt'.format(fecha,i)) 
         long = np.array(datos['Long'])
         lat = np.array(datos['Lat'])
         long_min=long.min()
