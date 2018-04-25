@@ -100,5 +100,13 @@ ENV/
 # api
 api.py
 
+# data
+/data
+ 
+# mapas
+/mapas
+
+
+
 # mypy
 .mypy_cache/

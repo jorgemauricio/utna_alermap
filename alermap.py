@@ -20,7 +20,7 @@ def main():
     descarga=descarga_datos(fecha, clave)
     mapa(fecha,cincodias)
 
-def fecha_usr(clave):   #Obtener fecha del url
+def fecha_usr(clave):   #Obtener fecha del servidor FTP del (INIFAP)
     conexion = FTP(clave.ip)   #Nombre del servidor
     conexion.login(clave.usr, clave.pwd)  #Usuario y contraseña del servidor
     fecha = []
