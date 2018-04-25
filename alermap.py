@@ -22,15 +22,15 @@ def main():
 
 def fecha_usr(clave):   #Obtener fecha del url
     conexion = FTP(clave.ip)   #Nombre del servidor
-    conexion.login(clave.usr, clave.pwd)  #Usuario y contrasena del servidor
+    conexion.login(clave.usr, clave.pwd)  #Usuario y contraseña del servidor
     fecha = []
-    conexion.dir(fecha.append)  #Se almacena toda la informacion que se encuentra en el directorio actual dentro del arreglo
+    conexion.dir(fecha.append)  #Se almacena toda la información que se encuentra en el directorio actual dentro del arreglo
     fecha = fecha[-1].split()[-1]
     print("Obteniendo fecha actual:'{}'".format(fecha))
     return fecha  # Se devuelve el valor obtenido
 
 
-def cinco_dias(fecha): #Funcion para obtener cuatro dias posteriores a la fecha obtenida
+def cinco_dias(fecha): #Función para obtener cuatro dias posteriores a la fecha obtenida
 
     ano, mes, dia = (int(n) for n in fecha.split("-")) 
     if mes in (1, 3, 5, 7, 8, 10, 12):  #Validacion de fecha
@@ -56,12 +56,12 @@ def cinco_dias(fecha): #Funcion para obtener cuatro dias posteriores a la fecha 
 def descarga_datos(fecha, clave): #Descargar los documentos de la carpeta con el nombre de la fecha actual
     try:
         conexion=FTP(clave.ip);   #Nombre del servidor
-        conexion.login(clave.usr,clave.pwd)  #Usuario y contrasena del servidor
+        conexion.login(clave.usr,clave.pwd)  #Usuario y contraseña del servidor
         print("Conexion exitosa")
         conexion.cwd('{}'.format(fecha))     #Infresa a una carpeta dentro del servidor
 
  
-        if os.path.exists('data'):  #verifica si existe la carpeta data  (donde se almacenaran los documentos a descargar)
+        if os.path.exists('data'):  #Verifica si existe la carpeta data  (donde se almacenaran los documentos a descargar)
             os.chdir('data')       #Accede a la carpeta data
         else:
             os.mkdir('data')        #Si no existe crea la carpeta data
@@ -78,9 +78,9 @@ def descarga_datos(fecha, clave): #Descargar los documentos de la carpeta con el
         conexion.quit()
         os.chdir('..')
     except ValueError:
-        print("Conexion fallida") # sino hay internet marca error 
+        print("Conexion fallida") # Si no hay internet marca  error 
 
-def mapa(fecha, cincodias): #funcion de creacion de mapas
+def mapa(fecha, cincodias): #Función de creación de mapas
     
    
 
@@ -88,7 +88,7 @@ def mapa(fecha, cincodias): #funcion de creacion de mapas
     titulos=['Precipitación Acumulada en 24h','Temperatura Minima en 24h','Temperatura Máxima en 24 h','Velocidad del viento promedio en 24h']
     val=['mm', '°C ', '°C ', 'km/h']
 
-    for i in range(1,6):  # ciclo para leer los 5 archivos .txt
+    for i in range(1,6):  # Ciclo para leer los 5 archivos .txt
         datos = pd.read_csv('data/{}/d{}.txt'.format(fecha,i)) 
         long = np.array(datos['Long'])
         lat = np.array(datos['Lat'])
@@ -96,8 +96,8 @@ def mapa(fecha, cincodias): #funcion de creacion de mapas
         long_max=long.max()
         lat_min=lat.min()
         lat_max=lat.max()
-        print('Generando mapas del dia {}'.format(i))  #mensaje que imprime para decir cuales mapas se estan creando
-        for j in range(0,4):#ciclo para crear los cinco mapas por cada variable 
+        print('Generando mapas del dia {}'.format(i))  #Mensaje que imprime para decir cuales mapas se estan creando
+        for j in range(0,4):#Ciclo para crear los cinco mapas por cada variable 
             map = Basemap(projection ='mill', llcrnrlat=lat_min,urcrnrlat=lat_max, 
                 llcrnrlon=long_min, urcrnrlon=long_max,resolution='c')
             lista = rangos(variables[j])
@@ -106,7 +106,7 @@ def mapa(fecha, cincodias): #funcion de creacion de mapas
             a = 0
             b = 1
             c = 0
-            for k in range(1, 6):# ciclo para mapear la informacion en cad uno de los mapas
+            for k in range(1, 6):# Ciclo para mapear la información en cada uno de los mapas
                 alermap = datos.loc[datos[variables[j]] >= lista[a]]
                 alermap = alermap.loc[alermap[variables[j]] <= lista[b]]
                 x, y = map(np.array(alermap['Long']), np.array(alermap['Lat']))
@@ -117,12 +117,12 @@ def mapa(fecha, cincodias): #funcion de creacion de mapas
                 a = a + 2
                 b = b + 2
                 c = c + 1
-            cb1=plt.colorbar(plot) #barra de colores
+            cb1=plt.colorbar(plot) #Barra de colores
             cb1.set_label(' {}'.format(val[j]))
             map.readshapefile('shapes/Estados','Mill')# lellendo el shapefile 
             plt.text(x =1.0536e+06, y =1.33233e+06, s = u' @2018 INIFAP', fontsize = 15 ,color='green') #marca de agua
             plt.title('{} para el dia \n {} '.format(titulos[j], cincodias[i-1])) #titulo de los mapas
-            if os.path.exists('mapas'):  #verifica si existe la carpeta data  (donde se almacenaran los documentos a descargar)
+            if os.path.exists('mapas'):  #Verifica si existe la carpeta data  (donde se almacenaran los documentos a descargar)
                 os.chdir('mapas') #Accede a la carpeta data
             else:
                 os.mkdir('mapas') #Si no existe crea la carpeta data
@@ -134,7 +134,7 @@ def mapa(fecha, cincodias): #funcion de creacion de mapas
             plt.clf()
 
 
-def rangos(var):#funcion de rangos para cada variable
+def rangos(var):#Función de rangos para cada variable
     lista=[]
     if var =='Rain':
         lista=[20, 50, 50, 70, 70, 100, 100, 150, 150, 300,300,500]
@@ -149,7 +149,7 @@ def rangos(var):#funcion de rangos para cada variable
         lista=[30, 35, 35, 40, 40, 45, 45, 50, 50, 55]
     return lista
     
-def colores(var): #funcion de colores 
+def colores(var): #Función de colores 
     if var=='Rain':
         colores=['purple','royalblue', 'aqua', 'orange', 'red', 'rainbow']
         
