@@ -8,11 +8,13 @@ from matplotlib import pyplot as plt
 from mpl_toolkits.basemap import Basemap
 from matplotlib  import cm
 import shapefile
-                                                                #Librerias utilizadas
 
 
-def main():
-    fecha='2018-04-02'
+
+def main():""" 
+Funcion main es la principal que manda llamar todas las funciones que ejecutan subprocesos
+"""
+    #fecha='2018-04-02'
     clave=claves()
     fecha=fecha_usr(clave)
     print(cinco_dias(fecha))
@@ -20,20 +22,22 @@ def main():
     descarga=descarga_datos(fecha, clave)
     mapa(fecha,cincodias)
 
-def fecha_usr(clave):   #Obtener fecha del url
-    conexion = FTP(clave.ip)   #Nombre del servidor
-    conexion.login(clave.usr, clave.pwd)  #Usuario y contrasena del servidor
+def fecha_usr(clave): """Funcion que se conecta al servidor y obtiene la ultima fecha almacenada 
+en el servidor como metodo tiene 'clave' que es la clase que contiene la ip, el usuario y 
+contraseña para acceder a los archivos en el servidor"""
+    conexion = FTP(clave.ip)  
+    conexion.login(clave.usr, clave.pwd)  
     fecha = []
-    conexion.dir(fecha.append)  #Se almacena toda la informacion que se encuentra en el directorio actual dentro del arreglo
+    conexion.dir(fecha.append)  
     fecha = fecha[-1].split()[-1]
     print("Obteniendo fecha actual:'{}'".format(fecha))
-    return fecha  # Se devuelve el valor obtenido
+    return fecha 
 
 
-def cinco_dias(fecha): #Funcion para obtener cuatro dias posteriores a la fecha obtenida
-
+def cinco_dias(fecha):  """Funcion que genera cuatro dias posteriores a la fecha obtenida 
+como metodo tiene 'fecha' que es la variable donde se almacena la fecha obtenida desde el servidor"""
     ano, mes, dia = (int(n) for n in fecha.split("-")) 
-    if mes in (1, 3, 5, 7, 8, 10, 12):  #Validacion de fecha
+    if mes in (1, 3, 5, 7, 8, 10, 12): 
         dias_mes = 31
     elif mes == 2:
         if ano % 4 == 0 and (ano % 100 != 0 or ano % 400 == 0): 
@@ -53,37 +57,36 @@ def cinco_dias(fecha): #Funcion para obtener cuatro dias posteriores a la fecha 
                 dias.append('{:04d}-01-{:02d}'.format(ano + 1, n - (dias_mes - dia)))
     return dias
 
-def descarga_datos(fecha, clave): #Descargar los documentos de la carpeta con el nombre de la fecha actual
+def descarga_datos(fecha, clave):"""funcion descarga_datos descarga los archivos .txt, como parametros devuelve 
+la fecha encontrada y clave, que son las credenciales que contiene la API """ 
     try:
-        conexion=FTP(clave.ip);   #Nombre del servidor
-        conexion.login(clave.usr,clave.pwd)  #Usuario y contrasena del servidor
+        conexion=FTP(clave.ip);   
+        conexion.login(clave.usr,clave.pwd)  
         print("Conexion exitosa")
-        conexion.cwd('{}'.format(fecha))     #Infresa a una carpeta dentro del servidor
+        conexion.cwd('{}'.format(fecha))   
 
  
-        if os.path.exists('data'):  #verifica si existe la carpeta data  (donde se almacenaran los documentos a descargar)
-            os.chdir('data')       #Accede a la carpeta data
+        if os.path.exists('data'): 
+            os.chdir('data')       
         else:
-            os.mkdir('data')        #Si no existe crea la carpeta data
-            os.chdir('data')        #Accede a la carpeta data
-        if os.path.exists('{}'.format(fecha)): #Ingresar a la carpeta fecha
+            os.mkdir('data')        
+            os.chdir('data')        
+        if os.path.exists('{}'.format(fecha)):
             for i in range(1,6):
                 print("Descargando archivo d{}.txt".format(i))
                 conexion.retrbinary('RETR d{}.txt'.format(i),open('{}/d{}.txt'.format(fecha, i),'wb').write)
         else:
             os.mkdir('{}'.format(fecha))
-            for i in range(1,6): #Ciclo utilizado para descargaar los cinco archivos .txt
+            for i in range(1,6): 
                 print("Descargando archivo d{}.txt".format(i))
                 conexion.retrbinary('RETR d{}.txt'.format(i),open('{}/d{}.txt'.format(fecha, i), 'wb').write)
         conexion.quit()
         os.chdir('..')
     except ValueError:
-        print("Conexion fallida") # sino hay internet marca error 
+        print("Conexion fallida")  
 
-def mapa(fecha, cincodias): #funcion de creacion de mapas
-    
-   
-
+def mapa(fecha, cincodias):"""Funcion mapa que realiza el procesamiento de informacion 
+dibuja los mapas y como parametros devuelve la fecha obtenida y la validacion de los 4 dias subsecuentes calculados"""
     variables=['Rain', 'Tmin', 'Tmax', 'Windpro']
     titulos=['Precipitación','Temperatura Minima','Temperatura Máxima','Velocidad del viento']
     val=['MM', '°C ', '°C ', 'KM/H']
@@ -96,8 +99,8 @@ def mapa(fecha, cincodias): #funcion de creacion de mapas
         long_max=long.max()
         lat_min=lat.min()
         lat_max=lat.max()
-        print('Generando mapas del dia {}'.format(i))  #mensaje que imprime para decir cuales mapas se estan creando
-        for j in range(0,4):#ciclo para crear los cinco mapas por cada variable 
+        print('Generando mapas del dia {}'.format(i)) 
+        for j in range(0,4): 
             map = Basemap(projection ='mill', llcrnrlat=lat_min,urcrnrlat=lat_max, 
                 llcrnrlon=long_min, urcrnrlon=long_max,resolution='c')
             lista = rangos(variables[j])
@@ -106,7 +109,7 @@ def mapa(fecha, cincodias): #funcion de creacion de mapas
             a = 0
             b = 1
             c = 0
-            for k in range(1, 6):# ciclo para mapear la informacion en cad uno de los mapas
+            for k in range(1, 6):
                 alermap = datos.loc[datos[variables[j]] >= lista[a]]
                 alermap = alermap.loc[alermap[variables[j]] <= lista[b]]
                 x, y = map(np.array(alermap['Long']), np.array(alermap['Lat']))
@@ -117,16 +120,16 @@ def mapa(fecha, cincodias): #funcion de creacion de mapas
                 a = a + 2
                 b = b + 2
                 c = c + 1
-            cb1=plt.colorbar(plot) #barra de colores
+            cb1=plt.colorbar(plot) 
             cb1.set_label(' {}'.format(val[j]))
-            map.readshapefile('shapes/Estados','Mill')# lellendo el shapefile 
-            plt.text(x =1.0536e+06, y =1.33233e+06, s = u' @2018 INIFAP', fontsize = 15 ,color='green') #marca de agua
-            plt.title('{} para el dia \n {} '.format(titulos[j], cincodias[i-1])) #titulo de los mapas
-            if os.path.exists('mapas'):  #verifica si existe la carpeta data  (donde se almacenaran los documentos a descargar)
-                os.chdir('mapas') #Accede a la carpeta data
+            map.readshapefile('shapes/Estados','Mill')
+            plt.text(x =1.0536e+06, y =1.33233e+06, s = u' @2018 INIFAP', fontsize = 15 ,color='green')
+            plt.title('{} para el dia \n {} '.format(titulos[j], cincodias[i-1]))
+            if os.path.exists('mapas'):
+                os.chdir('mapas') 
             else:
-                os.mkdir('mapas') #Si no existe crea la carpeta data
-                os.chdir('mapas')  #Accede a la carpeta data
+                os.mkdir('mapas') 
+                os.chdir('mapas') 
             os.chdir("..")
             plt.savefig('mapas/Pronostico-del-dia-{}-clima-{}.png'.format(cincodias[i-1], variables[j]),dpi=300)
             plt.title('{} para el dia \n {} '.format(titulos[j], cincodias[i-1]))
@@ -134,7 +137,8 @@ def mapa(fecha, cincodias): #funcion de creacion de mapas
             plt.clf()
 
 
-def rangos(var):#funcion de rangos para cada variable
+def rangos(var):""" Funcion para definir en listas los rangos de cada variable
+devuelve como parametro la var que es la condicional de las variables"""
     lista=[]
     if var =='Rain':
         lista=[20, 50, 50, 70, 70, 100, 100, 150, 150, 300]
@@ -149,7 +153,8 @@ def rangos(var):#funcion de rangos para cada variable
         lista=[30, 35, 35, 40, 40, 45, 45, 50, 50, 55]
     return lista
     
-def colores(var): #funcion de colores 
+def colores(var): """Funcion para definir los colores que se se van a dibujar en los mapas 
+se definen los colores por los rangos de cada variable"""
     if var=='Rain':
         colores=['purple','royalblue', 'aqua', 'orange', 'red', 'rainbow']
         
