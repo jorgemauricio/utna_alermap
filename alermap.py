@@ -12,7 +12,7 @@ import shapefile
 
 
 def main():
-    fecha='2018-04-02'
+    #fecha='2018-04-25'
     clave=claves()
     fecha=fecha_usr(clave)
     print(cinco_dias(fecha))
@@ -85,11 +85,11 @@ def mapa(fecha, cincodias): #funcion de creacion de mapas
    
 
     variables=['Rain', 'Tmin', 'Tmax', 'Windpro']
-    titulos=['Precipitación','Temperatura Minima','Temperatura Máxima','Velocidad del viento']
-    val=['MM', '°C ', '°C ', 'KM/H']
+    titulos=['Precipitación Acumulada en 24h','Temperatura Minima en 24h','Temperatura Máxima en 24 h','Velocidad del viento promedio en 24h']
+    val=['mm', '°C ', '°C ', 'km/h']
 
     for i in range(1,6):  # ciclo para leer los 5 archivos .txt
-        datos = pd.read_csv('data/2018-03-15/d{}.txt'.format(i)) 
+        datos = pd.read_csv('data/{}/d{}.txt'.format(fecha,i)) 
         long = np.array(datos['Long'])
         lat = np.array(datos['Lat'])
         long_min=long.min()
@@ -137,7 +137,7 @@ def mapa(fecha, cincodias): #funcion de creacion de mapas
 def rangos(var):#funcion de rangos para cada variable
     lista=[]
     if var =='Rain':
-        lista=[20, 50, 50, 70, 70, 100, 100, 150, 150, 300]
+        lista=[20, 50, 50, 70, 70, 100, 100, 150, 150, 300,300,500]
     
     elif var=='Windpro':
         lista=[62, 74, 74, 88, 88, 102, 102, 117, 117, 150]
