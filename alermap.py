@@ -96,7 +96,7 @@ def mapa(fecha, cincodias): #Función de creación de mapas
         long_max=long.max()
         lat_min=lat.min()
         lat_max=lat.max()
-        print('Generando mapas del dia {}'.format(i))  #Mensaje que imprime para decir cuales mapas se estan creando
+        print('Generando mapas del dia {}'.format(i))  #Mensaje que imprime para decir cuales mapas se están creando
         for j in range(0,4):#Ciclo para crear los cinco mapas por cada variable 
             map = Basemap(projection ='mill', llcrnrlat=lat_min,urcrnrlat=lat_max, 
                 llcrnrlon=long_min, urcrnrlon=long_max,resolution='c')
@@ -119,14 +119,14 @@ def mapa(fecha, cincodias): #Función de creación de mapas
                 c = c + 1
             cb1=plt.colorbar(plot) #Barra de colores
             cb1.set_label(' {}'.format(val[j]))
-            map.readshapefile('shapes/Estados','Mill')# lellendo el shapefile 
-            plt.text(x =1.0536e+06, y =1.33233e+06, s = u' @2018 INIFAP', fontsize = 15 ,color='green') #marca de agua
-            plt.title('{} para el dia \n {} '.format(titulos[j], cincodias[i-1])) #titulo de los mapas
+            map.readshapefile('shapes/Estados','Mill')# Lee el shapefile
+            plt.text(x =1.0536e+06, y =1.33233e+06, s = u' @2018 INIFAP', fontsize = 15 ,color='green') #Marca de agua
+            plt.title('{} para el dia \n {} '.format(titulos[j], cincodias[i-1])) #Titulo de los mapas
             if os.path.exists('mapas'):  #Verifica si existe la carpeta data  (donde se almacenaran los documentos a descargar)
                 os.chdir('mapas') #Accede a la carpeta data
             else:
                 os.mkdir('mapas') #Si no existe crea la carpeta data
-                os.chdir('mapas')  #Accede a la carpeta data
+                os.chdir('mapas')  #Accede a la carpeta data para guardar los mapas
             os.chdir("..")
             plt.savefig('mapas/Pronostico-del-dia-{}-clima-{}.png'.format(cincodias[i-1], variables[j]),dpi=300)
             plt.title('{} para el dia \n {} '.format(titulos[j], cincodias[i-1]))
