@@ -11,9 +11,10 @@ import shapefile
 
 
 
-def main():""" 
-Funcion main es la principal que manda llamar todas las funciones que ejecutan subprocesos
-"""
+def main():  
+    """ 
+    Funcion main es la principal que manda llamar todas las funciones que ejecutan subprocesos
+    """
     #fecha='2018-04-02'
     clave=claves()
     fecha=fecha_usr(clave)
@@ -22,9 +23,10 @@ Funcion main es la principal que manda llamar todas las funciones que ejecutan s
     descarga=descarga_datos(fecha, clave)
     mapa(fecha,cincodias)
 
-def fecha_usr(clave): """Funcion que se conecta al servidor y obtiene la ultima fecha almacenada 
-en el servidor como metodo tiene 'clave' que es la clase que contiene la ip, el usuario y 
-contraseña para acceder a los archivos en el servidor"""
+def fecha_usr(clave): 
+    """Funcion que se conecta al servidor y obtiene la ultima fecha almacenada 
+    en el servidor como metodo tiene 'clave' que es la clase que contiene la ip, el usuario y 
+    contraseña para acceder a los archivos en el servidor"""
     conexion = FTP(clave.ip)  
     conexion.login(clave.usr, clave.pwd)  
     fecha = []
@@ -34,8 +36,9 @@ contraseña para acceder a los archivos en el servidor"""
     return fecha 
 
 
-def cinco_dias(fecha):  """Funcion que genera cuatro dias posteriores a la fecha obtenida 
-como metodo tiene 'fecha' que es la variable donde se almacena la fecha obtenida desde el servidor"""
+def cinco_dias(fecha): 
+    """Funcion que genera cuatro dias posteriores a la fecha obtenida 
+    como metodo tiene 'fecha' que es la variable donde se almacena la fecha obtenida desde el servidor"""
     ano, mes, dia = (int(n) for n in fecha.split("-")) 
     if mes in (1, 3, 5, 7, 8, 10, 12): 
         dias_mes = 31
@@ -47,7 +50,7 @@ como metodo tiene 'fecha' que es la variable donde se almacena la fecha obtenida
     elif mes in (4, 6, 9, 11):
         dias_mes = 30
     dias = []
-    for n in range(0, 5): #Ciclo utilizado para almacenar los 5 dias
+    for n in range(0, 5):
         if dia + n <= dias_mes: 
             dias.append('{:04d}-{:02d}-{:02d}'.format(ano, mes, dia + n)) 
         else:                                                               
@@ -57,8 +60,9 @@ como metodo tiene 'fecha' que es la variable donde se almacena la fecha obtenida
                 dias.append('{:04d}-01-{:02d}'.format(ano + 1, n - (dias_mes - dia)))
     return dias
 
-def descarga_datos(fecha, clave):"""funcion descarga_datos descarga los archivos .txt, como parametros devuelve 
-la fecha encontrada y clave, que son las credenciales que contiene la API """ 
+def descarga_datos(fecha, clave):
+    """funcion descarga_datos descarga los archivos .txt, como parametros devuelve 
+    la fecha encontrada y clave, que son las credenciales que contiene la API """ 
     try:
         conexion=FTP(clave.ip);   
         conexion.login(clave.usr,clave.pwd)  
@@ -85,13 +89,14 @@ la fecha encontrada y clave, que son las credenciales que contiene la API """
     except ValueError:
         print("Conexion fallida")  
 
-def mapa(fecha, cincodias):"""Funcion mapa que realiza el procesamiento de informacion 
-dibuja los mapas y como parametros devuelve la fecha obtenida y la validacion de los 4 dias subsecuentes calculados"""
+def mapa(fecha, cincodias):
+    """Funcion mapa que realiza el procesamiento de informacion 
+    dibuja los mapas y como parametros devuelve la fecha obtenida y la validacion de los 4 dias subsecuentes calculados"""
     variables=['Rain', 'Tmin', 'Tmax', 'Windpro']
     titulos=['Precipitación acumulada en 24h','Temperatura Minima en 24h','Temperatura Máxima en 24h','Velocidad del viento en 24h']
     val=['mm', '°C ', '°C ', 'km/h']
 
-    for i in range(1,6):  # ciclo para leer los 5 archivos .txt
+    for i in range(1,6): 
         datos = pd.read_csv('data/{}}/d{}.txt'.format(fecha,i)) 
         long = np.array(datos['Long'])
         lat = np.array(datos['Lat'])
@@ -137,8 +142,9 @@ dibuja los mapas y como parametros devuelve la fecha obtenida y la validacion de
             plt.clf()
 
 
-def rangos(var):""" Funcion para definir en listas los rangos de cada variable
-devuelve como parametro la var que es la condicional de las variables"""
+def rangos(var):
+    """ Funcion para definir en listas los rangos de cada variable
+    devuelve como parametro la var que es la condicional de las variables"""
     lista=[]
     if var =='Rain':
         lista=[20, 50, 50, 70, 70, 100, 100, 150, 150, 300]
@@ -153,8 +159,9 @@ devuelve como parametro la var que es la condicional de las variables"""
         lista=[30, 35, 35, 40, 40, 45, 45, 50, 50, 55]
     return lista
     
-def colores(var): """Funcion para definir los colores que se se van a dibujar en los mapas 
-se definen los colores por los rangos de cada variable"""
+def colores(var): 
+    """Funcion para definir los colores que se se van a dibujar en los mapas 
+    se definen los colores por los rangos de cada variable"""
     if var=='Rain':
         colores=['purple','royalblue', 'aqua', 'orange', 'red', 'rainbow']
         
