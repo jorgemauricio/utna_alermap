@@ -15,7 +15,7 @@ def main():
     """ 
     Funcion main es la principal que manda llamar todas las funciones que ejecutan subprocesos
     """
-    #fecha='2018-04-02'
+    #fecha='2018-04-30'
     clave=claves()
     fecha=fecha_usr(clave)
     print(cinco_dias(fecha))
@@ -92,12 +92,19 @@ def descarga_datos(fecha, clave):
 def mapa(fecha, cincodias):
     """Funcion mapa que realiza el procesamiento de informacion 
     dibuja los mapas y como parametros devuelve la fecha obtenida y la validacion de los 4 dias subsecuentes calculados"""
+    if not os.path.exists('mapas'):
+        os.mkdir('mapas')
+
+    if not os.path.exists('mapas/{}'.format(fecha)):
+        os.mkdir('mapas/{}'.format(fecha))
     variables=['Rain', 'Tmin', 'Tmax', 'Windpro']
     titulos=['Precipitación acumulada en 24h','Temperatura Minima en 24h','Temperatura Máxima en 24h','Velocidad del viento en 24h']
     val=['mm', '°C ', '°C ', 'km/h']
 
-    for i in range(1,6): 
-        datos = pd.read_csv('data/{}}/d{}.txt'.format(fecha,i)) 
+    for i in range(1,6):
+        if not os.path.exists('mapas/{}/{}'.format(fecha, cincodias[i-1])):
+            os.mkdir('mapas/{}/{}'.format(fecha, cincodias[i-1])) 
+        datos = pd.read_csv('data/{}/d{}.txt'.format(fecha,i)) 
         long = np.array(datos['Long'])
         lat = np.array(datos['Lat'])
         long_min=long.min()
@@ -129,14 +136,8 @@ def mapa(fecha, cincodias):
             cb1.set_label(' {}'.format(val[j]))
             map.readshapefile('shapes/Estados','Mill')
             plt.text(x =1.0536e+06, y =1.33233e+06, s = u' @2018 INIFAP', fontsize = 15 ,color='green')
-            plt.title('{} para el dia \n {} '.format(titulos[j], cincodias[i-1]))
-            if os.path.exists('mapas'):
-                os.chdir('mapas') 
-            else:
-                os.mkdir('mapas') 
-                os.chdir('mapas') 
-            os.chdir("..")
-            plt.savefig('mapas/Pronostico-del-dia-{}-clima-{}.png'.format(cincodias[i-1], variables[j]),dpi=300)
+            plt.title('{} para el dia \n {} '.format(titulos[j], cincodias[i-1]))          
+            plt.savefig('mapas/{}/{}/Pronostico-del-dia-{}-clima-{}.png'.format(fecha,cincodias[i-1],cincodias[i-1], variables[j]),dpi=300)
             plt.title('{} para el dia \n {} '.format(titulos[j], cincodias[i-1]))
          
             plt.clf()
