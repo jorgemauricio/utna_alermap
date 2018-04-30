@@ -81,14 +81,20 @@ def descarga_datos(fecha, clave): #Descargar los documentos de la carpeta con el
         print("Conexion fallida") # Si no hay internet marca  error 
 
 def mapa(fecha, cincodias): #Función de creación de mapas
-    
-   
+    if not os.path.exists('mapas'):
+        os.mkdir('mapas')
+
+    if not os.path.exists('mapas/{}'.format(fecha)):
+        os.mkdir('mapas/{}'.format(fecha))
+   	
 
     variables=['Rain', 'Tmin', 'Tmax', 'Windpro']
     titulos=['Precipitación Acumulada en 24h','Temperatura Minima en 24h','Temperatura Máxima en 24 h','Velocidad del viento promedio en 24h']
     val=['mm', '°C ', '°C ', 'km/h']
 
     for i in range(1,6):  # Ciclo para leer los 5 archivos .txt
+        if not os.path.exists('mapas/{}/{}'.format(fecha, cincodias[i-1])):#si no existe la carpeta mapas la crea y crea la carpeta de las fechas obtenidas para gurdar los mapas
+            os.mkdir('mapas/{}/{}'.format(fecha, cincodias[i-1]))
         datos = pd.read_csv('data/{}/d{}.txt'.format(fecha,i)) 
         long = np.array(datos['Long'])
         lat = np.array(datos['Lat'])
@@ -122,13 +128,7 @@ def mapa(fecha, cincodias): #Función de creación de mapas
             map.readshapefile('shapes/Estados','Mill')# Lee el shapefile
             plt.text(x =1.0536e+06, y =1.33233e+06, s = u' @2018 INIFAP', fontsize = 15 ,color='green') #Marca de agua
             plt.title('{} para el dia \n {} '.format(titulos[j], cincodias[i-1])) #Titulo de los mapas
-            if os.path.exists('mapas'):  #Verifica si existe la carpeta data  (donde se almacenaran los documentos a descargar)
-                os.chdir('mapas') #Accede a la carpeta data
-            else:
-                os.mkdir('mapas') #Si no existe crea la carpeta data
-                os.chdir('mapas')  #Accede a la carpeta data para guardar los mapas
-            os.chdir("..")
-            plt.savefig('mapas/Pronostico-del-dia-{}-clima-{}.png'.format(cincodias[i-1], variables[j]),dpi=300)
+            plt.savefig('mapas/{}/{}/Pronostico-del-dia-{}-clima-{}.png'.format(fecha,cincodias[i-1],cincodias[i-1], variables[j]),dpi=300)
             plt.title('{} para el dia \n {} '.format(titulos[j], cincodias[i-1]))
          
             plt.clf()
