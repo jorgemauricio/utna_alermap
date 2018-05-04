@@ -105,4 +105,4 @@ api.py
 /data
 
 # mapas
-.mapas_cache/
+/mapas
